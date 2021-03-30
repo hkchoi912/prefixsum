@@ -125,7 +125,7 @@ class SparsePrefixSum(val n: Int) extends Module {
     val up_layer_idx1 = n / math.pow(2, layer + 1).toInt - 1
     val up_layer_idx2 = n / math.pow(2, layer + 1).toInt - 1 + n / math.pow(2, layer + 2).toInt
     
-    println("base_idx : " + base_idx + " up_layer_idx1 : " + up_layer_idx1 + " up_layer_idx2 : " + up_layer_idx2)
+    //println("base_idx : " + base_idx + " up_layer_idx1 : " + up_layer_idx1 + " up_layer_idx2 : " + up_layer_idx2)
     
     for (i <- 0 until 2 * math.pow(2, layer).toInt - 1 - (math.pow(2, layer).toInt - 1)) {
       val test = i * (n / math.pow(2, layer + 1).toInt)
@@ -133,10 +133,11 @@ class SparsePrefixSum(val n: Int) extends Module {
       CSA_DOWN(base_idx + i).b := Carry(up_layer_idx1 + test)
       CSA_DOWN(base_idx + i).c := Sum(up_layer_idx2 + test)
       CSA_DOWN(base_idx + i).d := Carry(up_layer_idx2 + test)
+      //println("layer : " + layer + " base_idx : " + base_idx + " i : " + i + " idx : " + (base_idx + i) + " inputwire1 : " + (up_layer_idx1 + test) + " inputwire2 : " + (up_layer_idx2 + test))
     }
 
     for (i <- 2 * math.pow(2, layer).toInt - (math.pow(2, layer).toInt - 1) until 2 * math.pow(2, layer).toInt) {
-      //println("layer: " + layer + " i : " + i + " base_idx : " + base_idx)
+      println("layer: " + layer + " i : " + i + " base_idx : " + base_idx)
     }
   }
 

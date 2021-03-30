@@ -1,2 +1,28 @@
-[0m[[0m[33mwarn[0m] [0m[0mthere were 55 feature warnings; re-run with -feature for details[0m
-[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m
+[0m[[0m[31merror[0m] [0m[0m/home/hkchoi/test/prefixsum/src/main/scala/test.scala:133:33: not found: value base_idx2[0m
+[0m[[0m[31merror[0m] [0m[0m        println("CSA NUM : " + (base_idx2 + i))[0m
+[0m[[0m[31merror[0m] [0m[0m                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/hkchoi/test/prefixsum/src/main/scala/test.scala:134:19: not found: value base_idx2[0m
+[0m[[0m[31merror[0m] [0m[0m         CSA_DOWN(base_idx2 + i).a := CSA_UP(base_idx1 + 2 * i).sum[0m
+[0m[[0m[31merror[0m] [0m[0m                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/hkchoi/test/prefixsum/src/main/scala/test.scala:134:46: not found: value base_idx1[0m
+[0m[[0m[31merror[0m] [0m[0m         CSA_DOWN(base_idx2 + i).a := CSA_UP(base_idx1 + 2 * i).sum[0m
+[0m[[0m[31merror[0m] [0m[0m                                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/hkchoi/test/prefixsum/src/main/scala/test.scala:135:19: not found: value base_idx2[0m
+[0m[[0m[31merror[0m] [0m[0m         CSA_DOWN(base_idx2 + i).b := CSA_UP(base_idx1 + 2 * i).cout[0m
+[0m[[0m[31merror[0m] [0m[0m                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/hkchoi/test/prefixsum/src/main/scala/test.scala:135:46: not found: value base_idx1[0m
+[0m[[0m[31merror[0m] [0m[0m         CSA_DOWN(base_idx2 + i).b := CSA_UP(base_idx1 + 2 * i).cout[0m
+[0m[[0m[31merror[0m] [0m[0m                                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/hkchoi/test/prefixsum/src/main/scala/test.scala:136:19: not found: value base_idx2[0m
+[0m[[0m[31merror[0m] [0m[0m         CSA_DOWN(base_idx2 + i).c := CSA_UP(base_idx1 + 2 * i + 1).sum[0m
+[0m[[0m[31merror[0m] [0m[0m                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/hkchoi/test/prefixsum/src/main/scala/test.scala:136:46: not found: value base_idx1[0m
+[0m[[0m[31merror[0m] [0m[0m         CSA_DOWN(base_idx2 + i).c := CSA_UP(base_idx1 + 2 * i + 1).sum[0m
+[0m[[0m[31merror[0m] [0m[0m                                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/hkchoi/test/prefixsum/src/main/scala/test.scala:137:19: not found: value base_idx2[0m
+[0m[[0m[31merror[0m] [0m[0m         CSA_DOWN(base_idx2 + i).d := CSA_UP(base_idx1 + 2 * i + 1).sum[0m
+[0m[[0m[31merror[0m] [0m[0m                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/hkchoi/test/prefixsum/src/main/scala/test.scala:137:46: not found: value base_idx1[0m
+[0m[[0m[31merror[0m] [0m[0m         CSA_DOWN(base_idx2 + i).d := CSA_UP(base_idx1 + 2 * i + 1).sum[0m
+[0m[[0m[31merror[0m] [0m[0m                                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m9 errors found[0m

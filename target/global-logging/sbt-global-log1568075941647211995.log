@@ -47,3 +47,4 @@
 [0m[[0m[0mdebug[0m] [0m[0m      Load.loadTransitive: finalizeProject(Project(id test, base: /home/hkchoi/test/test, plugins: List(<none>))) took 5.64034ms[0m
 [0m[[0m[0mdebug[0m] [0m[0m[Loading] Done in /home/hkchoi/test/test, returning: (test)[0m
 [0m[[0m[0mdebug[0m] [0m[0m    Load.loadUnit: loadedProjectsRaw took 77.982607ms[0m
+[0m[[0m[0mdebug[0m] [0m[0m    Load.loadUnit: cleanEvalClasses took 1.0914185803361E7ms[0m

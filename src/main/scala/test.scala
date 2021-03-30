@@ -79,7 +79,9 @@ class SparsePrefixSum(val n: Int) extends Module {
   val Up_layers = log2Floor(n) // 4
   val Down_layers = log2Floor(n) - 1 // 3
   val CSA_UP = Vec.fill(n - 1) { Module(new CSA4(1 + Up_layers)).io }
-  val CSA_DOWN = Vec.fill(n - log2Floor(16)) {Module(new CSA4(1 + Up_layers + Down_layers)).io}
+  val CSA_DOWN = Vec.fill(n - log2Floor(16)) {
+    Module(new CSA4(1 + Up_layers + Down_layers)).io
+  }
   val Sum = Vec.fill(n) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
   val Carry = Vec.fill(n + 1) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
 
@@ -89,9 +91,9 @@ class SparsePrefixSum(val n: Int) extends Module {
     CSA_UP(i).b := io.in(i + 1)
     CSA_UP(i).b := UInt(0)
     CSA_UP(i).b := UInt(0)
-    if (i % 2 ==0){
-      Sum(2 * i + 1):= CSA_UP(i).sum
-      Carry(2 * i + 1):= CSA_UP(i).cout
+    if (i % 2 == 0) {
+      Sum(2 * i + 1) := CSA_UP(i).sum
+      Carry(2 * i + 1) := CSA_UP(i).cout
     }
   }
 
@@ -106,10 +108,10 @@ class SparsePrefixSum(val n: Int) extends Module {
       CSA_UP(base_idx2 + i).c := CSA_UP(base_idx1 + 2 * i + 1).sum
       CSA_UP(base_idx2 + i).d := CSA_UP(base_idx1 + 2 * i + 1).sum
 
-      if(i % 2 == 0){
+      if (i % 2 == 0) {
         val test = math.pow(2, layer + 1).toInt + 4 * layer * i - 1
-        Sum(test):= CSA_UP(base_idx2 + i).sum
-        Carry(test):= CSA_UP(base_idx2 + i).cout
+        Sum(test) := CSA_UP(base_idx2 + i).sum
+        Carry(test) := CSA_UP(base_idx2 + i).cout
       }
 
     }
@@ -119,19 +121,26 @@ class SparsePrefixSum(val n: Int) extends Module {
   // 0 ~ Down_layers
   for (layer <- 0 until Down_layers) {
     val base_idx = 2 * math.pow(2, layer).toInt - (layer + 2)
-    val up_layer_idx1 = log2Floor(n) - (layer + 2)
-    if (layer == Down_layers - 1) {
-      val up_layer_idx2 = 0
-    } else {
-      val up_layer_idx2 = log2Floor(n) - (layer + 3)
-    }
-
-    // for (i <- 0 until 2 * math.pow(2, layer).toInt - 1) {
-    //   CSA_DOWN(base_idx2 + i).a := CSA_UP(base_idx1 + 2 * i).sum
-    //   CSA_DOWN(base_idx2 + i).b := CSA_UP(base_idx1 + 2 * i).cout
-    //   CSA_DOWN(base_idx2 + i).c := CSA_UP(base_idx1 + 2 * i + 1).sum
-    //   CSA_DOWN(base_idx2 + i).d := CSA_UP(base_idx1 + 2 * i + 1).sum
+    // val up_layer_idx1 = log2Floor(n) - (layer + 2)
+    // if (layer == Down_layers - 1) {
+    //   val up_layer_idx2 = 0
+    // } else {
+    //   val up_layer_idx2 = log2Floor(n) - (layer + 3)
     // }
+
+    for (
+      i <- 0 until 2 * math.pow(2, layer).toInt - 1 - (math.pow(2, layer).toInt - 1)) {
+        println("CSA NUM : " + (base_idx2 + i))
+         CSA_DOWN(base_idx + i).a := Sum(base_idx1 + 2 * i)
+         CSA_DOWN(base_idx + i).b := Carry(base_idx1 + 2 * i)
+         CSA_DOWN(base_idx + i).c := Sum(base_idx1 + 2 * i + 1)
+         CSA_DOWN(base_idx + i).d := Carry(base_idx1 + 2 * i + 1)
+    }
+    for (
+      i <- 2 * math.pow(2, layer).toInt - (math.pow(2, layer).toInt - 1) until 2 * math.pow(2, layer).toInt
+    ) {
+      //println("layer: " + layer + " i : " + i + " base_idx : " + base_idx)
+    }
   }
 
 }

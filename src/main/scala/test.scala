@@ -103,7 +103,7 @@ class SparsePrefixSum(val n: Int) extends Module {
     val base_idx2 = n - n / (math.pow(2, layer).toInt)
 
     for (i <- 0 until n / (2 * math.pow(2, layer).toInt)) {
-      CSA_UP(base_idx2 + i).a := CSA_UP(base_idx1 + 2 * i).sum
+      CSA_UP(base_idx2 + i).a := CSA_UP(base_idx1 + 2 * i).sum        // 이거 2 * i 맞나? 아닌거 같은데???
       CSA_UP(base_idx2 + i).b := CSA_UP(base_idx1 + 2 * i).cout
       CSA_UP(base_idx2 + i).c := CSA_UP(base_idx1 + 2 * i + 1).sum
       CSA_UP(base_idx2 + i).d := CSA_UP(base_idx1 + 2 * i + 1).sum
@@ -121,24 +121,21 @@ class SparsePrefixSum(val n: Int) extends Module {
   // 0 ~ Down_layers
   for (layer <- 0 until Down_layers) {
     val base_idx = 2 * math.pow(2, layer).toInt - (layer + 2)
-    // val up_layer_idx1 = log2Floor(n) - (layer + 2)
-    // if (layer == Down_layers - 1) {
-    //   val up_layer_idx2 = 0
-    // } else {
-    //   val up_layer_idx2 = log2Floor(n) - (layer + 3)
-    // }
-
-    for (
-      i <- 0 until 2 * math.pow(2, layer).toInt - 1 - (math.pow(2, layer).toInt - 1)) {
-        println("CSA NUM : " + (base_idx2 + i))
-         CSA_DOWN(base_idx + i).a := Sum(base_idx1 + 2 * i)
-         CSA_DOWN(base_idx + i).b := Carry(base_idx1 + 2 * i)
-         CSA_DOWN(base_idx + i).c := Sum(base_idx1 + 2 * i + 1)
-         CSA_DOWN(base_idx + i).d := Carry(base_idx1 + 2 * i + 1)
+    
+    val up_layer_idx1 = n / math.pow(2, layer + 1).toInt - 1
+    val up_layer_idx2 = n / math.pow(2, layer + 1).toInt - 1 + n / math.pow(2, layer + 2).toInt
+    
+    println("base_idx : " + base_idx + " up_layer_idx1 : " + up_layer_idx1 + " up_layer_idx2 : " + up_layer_idx2)
+    
+    for (i <- 0 until 2 * math.pow(2, layer).toInt - 1 - (math.pow(2, layer).toInt - 1)) {
+      val test = i * (n / math.pow(2, layer + 1).toInt)
+      CSA_DOWN(base_idx + i).a := Sum(up_layer_idx1 + test)
+      CSA_DOWN(base_idx + i).b := Carry(up_layer_idx1 + test)
+      CSA_DOWN(base_idx + i).c := Sum(up_layer_idx2 + test)
+      CSA_DOWN(base_idx + i).d := Carry(up_layer_idx2 + test)
     }
-    for (
-      i <- 2 * math.pow(2, layer).toInt - (math.pow(2, layer).toInt - 1) until 2 * math.pow(2, layer).toInt
-    ) {
+
+    for (i <- 2 * math.pow(2, layer).toInt - (math.pow(2, layer).toInt - 1) until 2 * math.pow(2, layer).toInt) {
       //println("layer: " + layer + " i : " + i + " base_idx : " + base_idx)
     }
   }

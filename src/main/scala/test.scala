@@ -84,6 +84,8 @@ class SparsePrefixSum(val n: Int) extends Module {
   }
   val Sum = Vec.fill(n) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
   val Carry = Vec.fill(n + 1) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
+  val Sum_lv2 = Vec.fill(n) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
+  val Carry_lv2 = Vec.fill(n + 1) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
 
   // lv0
   for (i <- 0 until n / 2) {
@@ -120,24 +122,49 @@ class SparsePrefixSum(val n: Int) extends Module {
 
   // 0 ~ Down_layers
   for (layer <- 0 until Down_layers) {
-    val base_idx = 2 * math.pow(2, layer).toInt - (layer + 2)
+    val base_num = 2 * math.pow(2, layer).toInt - (layer + 2)
     
-    val up_layer_idx1 = n / math.pow(2, layer + 1).toInt - 1
-    val up_layer_idx2 = n / math.pow(2, layer + 1).toInt - 1 + n / math.pow(2, layer + 2).toInt
+    val base_idx1 = n / math.pow(2, layer + 1).toInt - 1
+    val base_idx2 = n / math.pow(2, layer + 1).toInt - 1 + n / math.pow(2, layer + 2).toInt
     
-    //println("base_idx : " + base_idx + " up_layer_idx1 : " + up_layer_idx1 + " up_layer_idx2 : " + up_layer_idx2)
+    //println("base_num : " + base_num + " base_idx1 : " + base_idx1 + " base_idx2 : " + base_idx2)
     
+
+    // wire idx = base_idx2 + test
     for (i <- 0 until 2 * math.pow(2, layer).toInt - 1 - (math.pow(2, layer).toInt - 1)) {
       val test = i * (n / math.pow(2, layer + 1).toInt)
-      CSA_DOWN(base_idx + i).a := Sum(up_layer_idx1 + test)
-      CSA_DOWN(base_idx + i).b := Carry(up_layer_idx1 + test)
-      CSA_DOWN(base_idx + i).c := Sum(up_layer_idx2 + test)
-      CSA_DOWN(base_idx + i).d := Carry(up_layer_idx2 + test)
-      //println("layer : " + layer + " base_idx : " + base_idx + " i : " + i + " idx : " + (base_idx + i) + " inputwire1 : " + (up_layer_idx1 + test) + " inputwire2 : " + (up_layer_idx2 + test))
+      CSA_DOWN(base_num + i).a := Sum(base_idx1 + test)
+      CSA_DOWN(base_num + i).b := Carry(base_idx1 + test)
+      CSA_DOWN(base_num + i).c := Sum(base_idx2 + test)
+      CSA_DOWN(base_num + i).d := Carry(base_idx2 + test)
+      Sum_lv2(base_idx2 + test) := CSA_DOWN(base_num + i).sum
+      Carry_lv2(base_idx2 + test) := CSA_DOWN(base_num + i).cout
+      //println("layer : " + layer + " base_num : " + base_num + " i : " + i + " idx : " + (base_num + i) + " inputwire1 : " + (base_idx1 + test) + " inputwire2 : " + (base_idx2 + test))
     }
+    
+    // 여기서 i가 의미하는 것은 CSA NUM임. 이거말고 실제 wire 위치가 필요한데 그거는 어떻게 구하지?
+    // wire idx = base_idx2
+    for (i <-  2 * math.pow(2, layer + 1).toInt - (layer + 3) - (math.pow(2, layer).toInt - 1) until  2 * math.pow(2, layer + 1).toInt - (layer + 3)) {
+      // i가 홀수면은 2번째꺼는 wire에서 받아야되고, 짝수이면은 io.in에서 받아야함
+      // output을 바로 wire에 연결만 해주면은 된다
+      println("layer: " + layer + " i : " + i + " base_num : " + base_num)
+      
+      //val test2 = n / math.pow(2, layer + 2).toInt + 1
+      val test2 = n / math.pow(2, layer + 2).toInt
+      //println("test2 : " + test2 + " i : " + i + " i-test2 : " + (i - test2) + up_layer_i)
 
-    for (i <- 2 * math.pow(2, layer).toInt - (math.pow(2, layer).toInt - 1) until 2 * math.pow(2, layer).toInt) {
-      println("layer: " + layer + " i : " + i + " base_idx : " + base_idx)
+      // CSA_DOWN(i).a := Sum_lv2(i - test2)
+      // CSA_DOWN(i).b := Carry_lv2(i - test2)
+      if (i % 2 == 0){
+        CSA_DOWN(i).c := io.in(와이어)
+        CSA_DOWN(i).d := UInt(0)
+      } else{
+        CSA_DOWN(i).c := Sum(와이어)
+        CSA_DOWN(i).d := Carry(와이어)
+      }
+      Sum_lv2(와이어) := CSA_DOWN(i).sum
+      Sum_lv2(와이어) := CSA_DOWN(i).cout
+
     }
   }
 

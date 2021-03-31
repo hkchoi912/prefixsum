@@ -100,13 +100,13 @@ class SparsePrefixSum(val n: Int) extends Module {
 
   // lv1 ~ Up_layers
   for (layer <- 1 until Up_layers) {
-    val base_idx1 = n - n / (math.pow(2, layer - 1).toInt)  // 이전 layer의 base CSA number
-    val base_idx2 = n - n / (math.pow(2, layer).toInt)      // 현재 layer의 base CSA number
+    val base_csa_num1 = n - n / (math.pow(2, layer - 1).toInt)  // 이전 layer의 base CSA number
+    val base_csa_num2 = n - n / (math.pow(2, layer).toInt)      // 현재 layer의 base CSA number
 
     for (i <- 0 until n / (2 * math.pow(2, layer).toInt)) {
-      val csa_num = base_idx2 + i                           // 현재 CSA number
-      val in_csa_num1 = base_idx1 + 2 * i                   // input #1에 연결할 CSA number
-      val in_csa_num2 = base_idx1 + 2 * i + 1               // input #2에 연결할 CSA number
+      val csa_num = base_csa_num2 + i                           // 현재 CSA number
+      val in_csa_num1 = base_csa_num1 + 2 * i                   // input #1에 연결할 CSA number
+      val in_csa_num2 = base_csa_num1 + 2 * i + 1               // input #2에 연결할 CSA number
 
       CSA_UP(csa_num).a := CSA_UP(in_csa_num1).sum      
       CSA_UP(csa_num).b := CSA_UP(in_csa_num1).cout
@@ -140,12 +140,12 @@ class SparsePrefixSum(val n: Int) extends Module {
       Carry_lv2(in_wire_idx2 + offset) := CSA_DOWN(csa_num).cout
     }
     
-    // 여기서 i가 의미하는 것은 CSA NUM임. 이거말고 실제 wire 위치가 필요한데 그거는 어떻게 구하지?
-    // wire idx = in_wire_idx2
-    for (i <-  2 * math.pow(2, layer + 1).toInt - (layer + 3) - (math.pow(2, layer).toInt - 1) until  2 * math.pow(2, layer + 1).toInt - (layer + 3)) {
+    for (i <-  0 until  (math.pow(2, layer).toInt - 1)) {
+      val csa_num = 2 * math.pow(2, layer + 1).toInt - (layer + 3) - (math.pow(2, layer).toInt - 1) // 현재 layer 내 csa_num
+
       // i가 홀수면은 2번째꺼는 wire에서 받아야되고, 짝수이면은 io.in에서 받아야함
       // output을 바로 wire에 연결만 해주면은 된다
-      println("layer: " + layer + " i : " + i + " base_num : " + base_num)
+      println("layer: " + layer + " i : " + i + " csa_num : " + csa_num)
       
       //val test2 = n / math.pow(2, layer + 2).toInt + 1
       val test2 = n / math.pow(2, layer + 2).toInt
@@ -153,15 +153,15 @@ class SparsePrefixSum(val n: Int) extends Module {
 
       // CSA_DOWN(i).a := Sum_lv2(i - test2)
       // CSA_DOWN(i).b := Carry_lv2(i - test2)
-      if (i % 2 == 0){
-        CSA_DOWN(i).c := io.in(와이어)
-        CSA_DOWN(i).d := UInt(0)
-      } else{
-        CSA_DOWN(i).c := Sum(와이어)
-        CSA_DOWN(i).d := Carry(와이어)
-      }
-      Sum_lv2(와이어) := CSA_DOWN(i).sum
-      Sum_lv2(와이어) := CSA_DOWN(i).cout
+      // if (i % 2 == 0){
+      //   CSA_DOWN(i).c := io.in(와이어)
+      //   CSA_DOWN(i).d := UInt(0)
+      // } else{
+      //   CSA_DOWN(i).c := Sum(와이어)
+      //   CSA_DOWN(i).d := Carry(와이어)
+      // }
+      // Sum_lv2(와이어) := CSA_DOWN(i).sum
+      // Sum_lv2(와이어) := CSA_DOWN(i).cout
     }
   }
 

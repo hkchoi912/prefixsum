@@ -144,24 +144,24 @@ class SparsePrefixSum(val n: Int) extends Module {
       // output을 바로 wire에 연결만 해주면은 된다
     for (i <-  0 until  (math.pow(2, layer).toInt - 1)) {
       val csa_num = 2 * math.pow(2, layer + 1).toInt - (layer + 3) - (math.pow(2, layer).toInt - 1) + i // 현재 layer 내 csa_num
-      val wire_idx = n/2 + (n / math.pow(2, layer + 1).toInt) + (n / math.pow(2, layer + 1).toInt)          // 현재 csa의 wire_idx
+      val wire_idx = n / 2 + (n / math.pow(2, layer + 1).toInt) + (n / math.pow(2, layer + 2).toInt) + i * (n / math.pow(2, layer + 1).toInt) - 1          // 현재 csa의 wire_idx
       val offset = n / math.pow(2, layer + 2).toInt       // input #1과 input #2의 wire offset
 
-      println("layer: " + layer + " i : " + i + " csa_num : " + csa_num + " offset: " + offset)
+      println("layer: " + layer + " i : " + i + " csa_num : " + csa_num + " wire_idx: " + wire_idx + " offset: " + offset)
       
-      // CSA_DOWN(csa_num).a := Sum_lv2(wire_idx - offset)
-      // CSA_DOWN(csa_num).b := Carry_lv2(wire_idx - offset)
+      CSA_DOWN(csa_num).a := Sum_lv2(wire_idx - offset)
+      CSA_DOWN(csa_num).b := Carry_lv2(wire_idx - offset)
 
-      // if (i % 2 == 0){
-      //   CSA_DOWN(csa_num).c := io.in(wire_idx)
-      //   CSA_DOWN(csa_num).d := UInt(0)
-      // } else{
-      //   CSA_DOWN(csa_num).c := Sum(wire_idx)
-      //   CSA_DOWN(csa_num).d := Carry(wire_idx)
-      // }
+      if (i % 2 == 0){
+        CSA_DOWN(csa_num).c := io.in(wire_idx)
+        CSA_DOWN(csa_num).d := UInt(0)
+      } else{
+        CSA_DOWN(csa_num).c := Sum(wire_idx)
+        CSA_DOWN(csa_num).d := Carry(wire_idx)
+      }
 
-      // Sum_lv2(wire_idx) := CSA_DOWN(i).sum
-      // Sum_lv2(wire_idx) := CSA_DOWN(i).cout
+      Sum_lv2(wire_idx) := CSA_DOWN(i).sum
+      Sum_lv2(wire_idx) := CSA_DOWN(i).cout
     }
   }
 

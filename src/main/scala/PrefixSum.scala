@@ -123,28 +123,27 @@ class SparsePrefixSum(val n: Int) extends Module {
 
   // 0 ~ Down_layers
   for (layer <- 0 until Down_layers) {
-    val base_num = 2 * math.pow(2, layer).toInt - (layer + 2)
+    val base_num = 2 * math.pow(2, layer).toInt - (layer + 2) // 현재 layer의 base CSA number
+    val in_wire_idx1 = n / math.pow(2, layer + 1).toInt - 1      // input #1에 연결할 wire idx
+    val in_wire_idx2 = n / math.pow(2, layer + 1).toInt - 1 + n / math.pow(2, layer + 2).toInt //input #2에 연결할 wire idx
     
-    val base_idx1 = n / math.pow(2, layer + 1).toInt - 1
-    val base_idx2 = n / math.pow(2, layer + 1).toInt - 1 + n / math.pow(2, layer + 2).toInt
-    
-    println("base_num : " + base_num + " base_idx1 : " + base_idx1 + " base_idx2 : " + base_idx2)
+    println("layer: " + layer + " base_num : " + base_num + " in_wire_idx1 : " + in_wire_idx1 + " in_wire_idx2 : " + in_wire_idx2)
     
 
-    // wire idx = base_idx2 + test
+    // wire idx = in_wire_idx2 + test
     for (i <- 0 until 2 * math.pow(2, layer).toInt - 1 - (math.pow(2, layer).toInt - 1)) {
       val test = i * (n / math.pow(2, layer + 1).toInt)
-      CSA_DOWN(base_num + i).a := Sum(base_idx1 + test)
-      CSA_DOWN(base_num + i).b := Carry(base_idx1 + test)
-      CSA_DOWN(base_num + i).c := Sum(base_idx2 + test)
-      CSA_DOWN(base_num + i).d := Carry(base_idx2 + test)
-      Sum_lv2(base_idx2 + test) := CSA_DOWN(base_num + i).sum
-      Carry_lv2(base_idx2 + test) := CSA_DOWN(base_num + i).cout
-      //println("layer : " + layer + " base_num : " + base_num + " i : " + i + " idx : " + (base_num + i) + " inputwire1 : " + (base_idx1 + test) + " inputwire2 : " + (base_idx2 + test))
+      CSA_DOWN(base_num + i).a := Sum(in_wire_idx1 + test)
+      CSA_DOWN(base_num + i).b := Carry(in_wire_idx1 + test)
+      CSA_DOWN(base_num + i).c := Sum(in_wire_idx2 + test)
+      CSA_DOWN(base_num + i).d := Carry(in_wire_idx2 + test)
+      Sum_lv2(in_wire_idx2 + test) := CSA_DOWN(base_num + i).sum
+      Carry_lv2(in_wire_idx2 + test) := CSA_DOWN(base_num + i).cout
+      //println("layer : " + layer + " base_num : " + base_num + " i : " + i + " idx : " + (base_num + i) + " inputwire1 : " + (in_wire_idx1 + test) + " inputwire2 : " + (in_wire_idx2 + test))
     }
     /*
     // 여기서 i가 의미하는 것은 CSA NUM임. 이거말고 실제 wire 위치가 필요한데 그거는 어떻게 구하지?
-    // wire idx = base_idx2
+    // wire idx = in_wire_idx2
     for (i <-  2 * math.pow(2, layer + 1).toInt - (layer + 3) - (math.pow(2, layer).toInt - 1) until  2 * math.pow(2, layer + 1).toInt - (layer + 3)) {
       // i가 홀수면은 2번째꺼는 wire에서 받아야되고, 짝수이면은 io.in에서 받아야함
       // output을 바로 wire에 연결만 해주면은 된다

@@ -1,0 +1,7 @@
+./*.json
+./*.fir
+./*.v
+out
+inputs
+.zip
+./.metals

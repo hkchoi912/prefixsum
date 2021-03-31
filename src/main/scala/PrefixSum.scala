@@ -143,14 +143,14 @@ class SparsePrefixSum(val n: Int) extends Module {
     // i가 홀수면은 2번째꺼는 wire에서 받아야되고, 짝수이면은 io.in에서 받아야함
       // output을 바로 wire에 연결만 해주면은 된다
     for (i <-  0 until  (math.pow(2, layer).toInt - 1)) {
-      val csa_num = 2 * math.pow(2, layer + 1).toInt - (layer + 3) - (math.pow(2, layer).toInt - 1) // 현재 layer 내 csa_num
-      val wire_idx =              // 현재 csa의 wire_idx
+      val csa_num = 2 * math.pow(2, layer + 1).toInt - (layer + 3) - (math.pow(2, layer).toInt - 1) + i // 현재 layer 내 csa_num
+      val wire_idx = n/2 + (n / math.pow(2, layer + 1).toInt) + (n / math.pow(2, layer + 1).toInt)          // 현재 csa의 wire_idx
       val offset = n / math.pow(2, layer + 2).toInt       // input #1과 input #2의 wire offset
 
-      println("layer: " + layer + " i : " + i + " csa_num : " + csa_num + " offset: " + offset + " wire: " + wire)
+      println("layer: " + layer + " i : " + i + " csa_num : " + csa_num + " offset: " + offset)
       
-      CSA_DOWN(csa_num).a := Sum_lv2(wire_idx - offset)
-      CSA_DOWN(csa_num).b := Carry_lv2(wire_idx - offset)
+      // CSA_DOWN(csa_num).a := Sum_lv2(wire_idx - offset)
+      // CSA_DOWN(csa_num).b := Carry_lv2(wire_idx - offset)
 
       // if (i % 2 == 0){
       //   CSA_DOWN(csa_num).c := io.in(wire_idx)
@@ -170,6 +170,6 @@ object CSA4 extends App {
   (new ChiselStage)
     .execute(
       Array("-X", "verilog"),
-      Seq(ChiselGeneratorAnnotation(() => new SparsePrefixSum(16)))
+      Seq(ChiselGeneratorAnnotation(() => new SparsePrefixSum(32)))
     )
 }

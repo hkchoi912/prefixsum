@@ -1,1 +1,23 @@
-[0m[[0m[0mdebug[0m] [0m[0mJar uptodate: /home/hkchoi/test/prefixsum/target/scala-2.12/prefixsum_2.12-0.1.0-SNAPSHOT.jar[0m
+[0m[[0m[0mdebug[0m] [0m[0mPackaging /home/hkchoi/test/prefixsum/target/scala-2.12/prefixsum_2.12-0.1.0-SNAPSHOT.jar ...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInput file mappings:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	FA.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/FA.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	CSA3.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/CSA3.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	CSA4.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/CSA4.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	SparsePrefixSum.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/SparsePrefixSum.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	CSA4$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/CSA4$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	FA$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/FA$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	CSA3$$anon$2.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/CSA3$$anon$2.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	CSA4$$anon$3.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/CSA4$$anon$3.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	SparsePrefixSum$$anon$4.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/SparsePrefixSum$$anon$4.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	CSA4$delayedInit$body.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/CSA4$delayedInit$body.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mDone packaging.[0m

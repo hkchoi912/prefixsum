@@ -140,28 +140,27 @@ class SparsePrefixSum(val n: Int) extends Module {
       Carry_lv2(in_wire_idx2 + offset) := CSA_DOWN(csa_num).cout
     }
     
+    // i가 홀수면은 2번째꺼는 wire에서 받아야되고, 짝수이면은 io.in에서 받아야함
+      // output을 바로 wire에 연결만 해주면은 된다
     for (i <-  0 until  (math.pow(2, layer).toInt - 1)) {
       val csa_num = 2 * math.pow(2, layer + 1).toInt - (layer + 3) - (math.pow(2, layer).toInt - 1) // 현재 layer 내 csa_num
-
-      // i가 홀수면은 2번째꺼는 wire에서 받아야되고, 짝수이면은 io.in에서 받아야함
-      // output을 바로 wire에 연결만 해주면은 된다
-      println("layer: " + layer + " i : " + i + " csa_num : " + csa_num)
+      val offset = n / math.pow(2, layer + 2).toInt       // input #1과 input #2의 wire offset
       
-      //val test2 = n / math.pow(2, layer + 2).toInt + 1
-      val test2 = n / math.pow(2, layer + 2).toInt
-      //println("test2 : " + test2 + " i : " + i + " i-test2 : " + (i - test2) + up_layer_i)
+      println("layer: " + layer + " i : " + i + " csa_num : " + csa_num + " offset: " + offset)
+      
+      CSA_DOWN(i).a := Sum_lv2(i - offset)
+      CSA_DOWN(i).b := Carry_lv2(i - offset)
 
-      // CSA_DOWN(i).a := Sum_lv2(i - test2)
-      // CSA_DOWN(i).b := Carry_lv2(i - test2)
-      // if (i % 2 == 0){
-      //   CSA_DOWN(i).c := io.in(와이어)
-      //   CSA_DOWN(i).d := UInt(0)
-      // } else{
-      //   CSA_DOWN(i).c := Sum(와이어)
-      //   CSA_DOWN(i).d := Carry(와이어)
-      // }
-      // Sum_lv2(와이어) := CSA_DOWN(i).sum
-      // Sum_lv2(와이어) := CSA_DOWN(i).cout
+      if (i % 2 == 0){
+        CSA_DOWN(i).c := io.in(와이어)
+        CSA_DOWN(i).d := UInt(0)
+      } else{
+        CSA_DOWN(i).c := Sum(와이어)
+        CSA_DOWN(i).d := Carry(와이어)
+      }
+      
+      Sum_lv2(와이어) := CSA_DOWN(i).sum
+      Sum_lv2(와이어) := CSA_DOWN(i).cout
     }
   }
 

@@ -152,19 +152,23 @@ class SparsePrefixSum(val n: Int) extends Module {
       CSA_DOWN(csa_num).a := Sum_lv2(wire_idx - offset)
       CSA_DOWN(csa_num).b := Carry_lv2(wire_idx - offset)
 
-      if (i % 2 == 0){
+      if (wire_idx % 2 == 0){ 
+        //wire_idx가 짝수이면 io.in에서 입력을 받음
         CSA_DOWN(csa_num).c := io.in(wire_idx)
         CSA_DOWN(csa_num).d := UInt(0)
       } else{
+        // 홀수이면 Sum & Carry에서 받음
         CSA_DOWN(csa_num).c := Sum(wire_idx)
         CSA_DOWN(csa_num).d := Carry(wire_idx)
       }
-
+      // wire
       Sum_lv2(wire_idx) := CSA_DOWN(i).sum
-      Sum_lv2(wire_idx) := CSA_DOWN(i).cout
+      Carry_lv2(wire_idx) := CSA_DOWN(i).cout
     }
   }
+  //0은 input이랑 바로 연결 & 1, 3, 7, 15, 31 ...은 Sum lv1과 바로 연결
 
+  // ripple carry adder 추가
 }
 object CSA4 extends App {
   (new ChiselStage)

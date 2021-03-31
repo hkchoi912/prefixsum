@@ -1,2 +1,7 @@
-[0m[[0m[33mwarn[0m] [0m[0mthere were 63 feature warnings; re-run with -feature for details[0m
-[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m
+[0m[[0m[31merror[0m] [0m[0m/home/hkchoi/test/prefixsum/src/main/scala/PrefixSum.scala:151:47: value - is not a member of Unit[0m
+[0m[[0m[31merror[0m] [0m[0m      CSA_DOWN(csa_num).a := Sum_lv2(wire_idx - offset)[0m
+[0m[[0m[31merror[0m] [0m[0m                                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/hkchoi/test/prefixsum/src/main/scala/PrefixSum.scala:152:49: value - is not a member of Unit[0m
+[0m[[0m[31merror[0m] [0m[0m      CSA_DOWN(csa_num).b := Carry_lv2(wire_idx - offset)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                ^[0m
+[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m

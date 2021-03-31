@@ -1,7 +1,10 @@
 ./*.json
 ./*.fir
 ./*.v
+*.class
+*.fir
+*.jar
 out
 inputs
-.zip
+*.zip
 ./.metals

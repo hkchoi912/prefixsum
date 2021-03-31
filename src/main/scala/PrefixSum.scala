@@ -124,24 +124,22 @@ class SparsePrefixSum(val n: Int) extends Module {
   // 0 ~ Down_layers
   for (layer <- 0 until Down_layers) {
     val base_num = 2 * math.pow(2, layer).toInt - (layer + 2) // 현재 layer의 base CSA number
-    val in_wire_idx1 = n / math.pow(2, layer + 1).toInt - 1      // input #1에 연결할 wire idx
-    val in_wire_idx2 = n / math.pow(2, layer + 1).toInt - 1 + n / math.pow(2, layer + 2).toInt //input #2에 연결할 wire idx
+    val in_wire_idx1 = n / math.pow(2, layer + 1).toInt - 1      // base CSA의 input #1에 연결할 wire idx
+    val in_wire_idx2 = n / math.pow(2, layer + 1).toInt - 1 + n / math.pow(2, layer + 2).toInt //base CSA의 input #2에 연결할 wire idx
     
-    println("layer: " + layer + " base_num : " + base_num + " in_wire_idx1 : " + in_wire_idx1 + " in_wire_idx2 : " + in_wire_idx2)
-    
-
-    // wire idx = in_wire_idx2 + test
+    // input에 연결할 wire idx = in_wire_idx + offset
     for (i <- 0 until 2 * math.pow(2, layer).toInt - 1 - (math.pow(2, layer).toInt - 1)) {
-      val test = i * (n / math.pow(2, layer + 1).toInt)
-      CSA_DOWN(base_num + i).a := Sum(in_wire_idx1 + test)
-      CSA_DOWN(base_num + i).b := Carry(in_wire_idx1 + test)
-      CSA_DOWN(base_num + i).c := Sum(in_wire_idx2 + test)
-      CSA_DOWN(base_num + i).d := Carry(in_wire_idx2 + test)
-      Sum_lv2(in_wire_idx2 + test) := CSA_DOWN(base_num + i).sum
-      Carry_lv2(in_wire_idx2 + test) := CSA_DOWN(base_num + i).cout
-      //println("layer : " + layer + " base_num : " + base_num + " i : " + i + " idx : " + (base_num + i) + " inputwire1 : " + (in_wire_idx1 + test) + " inputwire2 : " + (in_wire_idx2 + test))
+      val csa_num = base_num + i
+      val offset = i * (n / math.pow(2, layer + 1).toInt)
+
+      CSA_DOWN(csa_num).a := Sum(in_wire_idx1 + offset)
+      CSA_DOWN(csa_num).b := Carry(in_wire_idx1 + offset)
+      CSA_DOWN(csa_num).c := Sum(in_wire_idx2 + offset)
+      CSA_DOWN(csa_num).d := Carry(in_wire_idx2 + offset)
+      Sum_lv2(in_wire_idx2 + offset) := CSA_DOWN(csa_num).sum
+      Carry_lv2(in_wire_idx2 + offset) := CSA_DOWN(csa_num).cout
     }
-    /*
+    
     // 여기서 i가 의미하는 것은 CSA NUM임. 이거말고 실제 wire 위치가 필요한데 그거는 어떻게 구하지?
     // wire idx = in_wire_idx2
     for (i <-  2 * math.pow(2, layer + 1).toInt - (layer + 3) - (math.pow(2, layer).toInt - 1) until  2 * math.pow(2, layer + 1).toInt - (layer + 3)) {
@@ -164,7 +162,7 @@ class SparsePrefixSum(val n: Int) extends Module {
       }
       Sum_lv2(와이어) := CSA_DOWN(i).sum
       Sum_lv2(와이어) := CSA_DOWN(i).cout
-    }*/
+    }
   }
 
 }

@@ -76,12 +76,11 @@ class SparsePrefixSum(val n: Int) extends Module {
     val in = Bits(INPUT, n)
     val out = Bits(OUTPUT, n * 7) //일단 출력할려고 *로 함. 원래는 RSA로 뽑은 + 비트 수
   }
-  val Up_layers = log2Floor(n) // 4
-  val Down_layers = log2Floor(n) - 1 // 3
+  
+  val Up_layers = log2Floor(n)
+  val Down_layers = log2Floor(n) - 1
   val CSA_UP = Vec.fill(n - 1) { Module(new CSA4(1 + Up_layers)).io }
-  val CSA_DOWN = Vec.fill(n - log2Floor(16)) {
-    Module(new CSA4(1 + Up_layers + Down_layers)).io
-  }
+  val CSA_DOWN = Vec.fill(n - log2Floor(16)) { Module(new CSA4(1 + Up_layers + Down_layers)).io }
   val Sum = Vec.fill(n) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
   val Carry = Vec.fill(n + 1) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
   val Sum_lv2 = Vec.fill(n) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
@@ -101,24 +100,26 @@ class SparsePrefixSum(val n: Int) extends Module {
 
   // lv1 ~ Up_layers
   for (layer <- 1 until Up_layers) {
-    val base_idx1 = n - n / (math.pow(2, layer - 1).toInt)
-    val base_idx2 = n - n / (math.pow(2, layer).toInt)
+    val base_idx1 = n - n / (math.pow(2, layer - 1).toInt)  // 이전 layer의 base CSA number
+    val base_idx2 = n - n / (math.pow(2, layer).toInt)      // 현재 layer의 base CSA number
 
     for (i <- 0 until n / (2 * math.pow(2, layer).toInt)) {
-      CSA_UP(base_idx2 + i).a := CSA_UP(base_idx1 + 2 * i).sum        // 이거 2 * i 맞나? 아닌거 같은데???
-      CSA_UP(base_idx2 + i).b := CSA_UP(base_idx1 + 2 * i).cout
-      CSA_UP(base_idx2 + i).c := CSA_UP(base_idx1 + 2 * i + 1).sum
-      CSA_UP(base_idx2 + i).d := CSA_UP(base_idx1 + 2 * i + 1).sum
+      val csa_num = base_idx2 + i                           // 현재 CSA number
+      val in_csa_num1 = base_idx1 + 2 * i                   // input #1에 연결할 CSA number
+      val in_csa_num2 = base_idx1 + 2 * i + 1               // input #2에 연결할 CSA number
+
+      CSA_UP(csa_num).a := CSA_UP(in_csa_num1).sum      
+      CSA_UP(csa_num).b := CSA_UP(in_csa_num1).cout
+      CSA_UP(csa_num).c := CSA_UP(in_csa_num2).sum
+      CSA_UP(csa_num).d := CSA_UP(in_csa_num2).sum
 
       if (i % 2 == 0) {
-        val test = math.pow(2, layer + 1).toInt + 4 * layer * i - 1
-        Sum(test) := CSA_UP(base_idx2 + i).sum
-        Carry(test) := CSA_UP(base_idx2 + i).cout
+        val wire_idx = math.pow(2, layer + 1).toInt + 4 * layer * i - 1
+        Sum(wire_idx) := CSA_UP(csa_num).sum
+        Carry(wire_idx) := CSA_UP(csa_num).cout
       }
-
     }
   }
-  // 홀수 idx wire에 값 저장되어 있는 상태임
 
   // 0 ~ Down_layers
   for (layer <- 0 until Down_layers) {
@@ -127,7 +128,7 @@ class SparsePrefixSum(val n: Int) extends Module {
     val base_idx1 = n / math.pow(2, layer + 1).toInt - 1
     val base_idx2 = n / math.pow(2, layer + 1).toInt - 1 + n / math.pow(2, layer + 2).toInt
     
-    //println("base_num : " + base_num + " base_idx1 : " + base_idx1 + " base_idx2 : " + base_idx2)
+    println("base_num : " + base_num + " base_idx1 : " + base_idx1 + " base_idx2 : " + base_idx2)
     
 
     // wire idx = base_idx2 + test
@@ -141,7 +142,7 @@ class SparsePrefixSum(val n: Int) extends Module {
       Carry_lv2(base_idx2 + test) := CSA_DOWN(base_num + i).cout
       //println("layer : " + layer + " base_num : " + base_num + " i : " + i + " idx : " + (base_num + i) + " inputwire1 : " + (base_idx1 + test) + " inputwire2 : " + (base_idx2 + test))
     }
-    
+    /*
     // 여기서 i가 의미하는 것은 CSA NUM임. 이거말고 실제 wire 위치가 필요한데 그거는 어떻게 구하지?
     // wire idx = base_idx2
     for (i <-  2 * math.pow(2, layer + 1).toInt - (layer + 3) - (math.pow(2, layer).toInt - 1) until  2 * math.pow(2, layer + 1).toInt - (layer + 3)) {
@@ -164,8 +165,7 @@ class SparsePrefixSum(val n: Int) extends Module {
       }
       Sum_lv2(와이어) := CSA_DOWN(i).sum
       Sum_lv2(와이어) := CSA_DOWN(i).cout
-
-    }
+    }*/
   }
 
 }

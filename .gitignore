@@ -1,10 +1,17 @@
-./*.json
-./*.fir
-./*.v
+# Subdirectories
+*.metals/
+./target/
+
+# Files
+*.json
+*.fir
+*.v
 *.class
 *.fir
 *.jar
+*.log
+*.zip
+
 out
 inputs
-*.zip
-.metals/*
+

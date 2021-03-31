@@ -146,21 +146,21 @@ class SparsePrefixSum(val n: Int) extends Module {
       val csa_num = 2 * math.pow(2, layer + 1).toInt - (layer + 3) - (math.pow(2, layer).toInt - 1) // 현재 layer 내 csa_num
       val offset = n / math.pow(2, layer + 2).toInt       // input #1과 input #2의 wire offset
       
-      println("layer: " + layer + " i : " + i + " csa_num : " + csa_num + " offset: " + offset)
+      println("layer: " + layer + " i : " + i + " csa_num : " + csa_num + " offset: " + offset + " csa_num - offset: " + (csa_num - offset))
       
-      CSA_DOWN(i).a := Sum_lv2(i - offset)
-      CSA_DOWN(i).b := Carry_lv2(i - offset)
+      CSA_DOWN(csa_num).a := Sum_lv2(csa_num - offset)
+      CSA_DOWN(csa_num).b := Carry_lv2(csa_num - offset)
 
-      if (i % 2 == 0){
-        CSA_DOWN(i).c := io.in(와이어)
-        CSA_DOWN(i).d := UInt(0)
-      } else{
-        CSA_DOWN(i).c := Sum(와이어)
-        CSA_DOWN(i).d := Carry(와이어)
-      }
-      
-      Sum_lv2(와이어) := CSA_DOWN(i).sum
-      Sum_lv2(와이어) := CSA_DOWN(i).cout
+      // if (i % 2 == 0){
+      //   CSA_DOWN(csa_num).c := io.in(와이어)
+      //   CSA_DOWN(csa_num).d := UInt(0)
+      // } else{
+      //   CSA_DOWN(csa_num).c := Sum(와이어)
+      //   CSA_DOWN(csa_num).d := Carry(와이어)
+      // }
+
+      // Sum_lv2(와이어) := CSA_DOWN(i).sum
+      // Sum_lv2(와이어) := CSA_DOWN(i).cout
     }
   }
 

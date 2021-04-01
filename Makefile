@@ -1,5 +1,8 @@
 SBT = sbt
 
 # Generate Verilog code
-hdl:
-	$(SBT) "runMain Hello"
+prefix:
+	$(SBT) "runMain prefix"
+
+packing:
+	$(SBT) "runMain "packing"

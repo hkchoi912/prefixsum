@@ -1,3 +1,9 @@
+/** TODO
+  * 1. 지금 down-layer에서도 CSA 지날때마다 1bit씩 증가되도록 설계되어있음. up-layer 마지막인 MSB가 최대 bit이므로 up-layer 이후에는 bit 증가시키지 않아도 됨
+  * 
+  */
+
+
 import Chisel._
 import chisel3.util.{log2Ceil, log2Floor}
 import chisel3.stage.{ChiselStage, ChiselGeneratorAnnotation}
@@ -74,7 +80,7 @@ class CSA4(val n: Int) extends Module {
 class SparsePrefixSum(val n: Int) extends Module {
   val io = new Bundle {
     val in = Bits(INPUT, n)
-    val out = Bits(OUTPUT, n * 7) //일단 출력할려고 *로 함. 원래는 RSA로 뽑은 + 비트 수
+    val out = Bits(OUTPUT, n * (2 * log2Floor(n) - 1)) //일단 출력할려고 *로 함. 원래는 RSA로 뽑은 + 비트 수
   }
   
   val Up_layers = log2Floor(n)
@@ -146,8 +152,6 @@ class SparsePrefixSum(val n: Int) extends Module {
       val csa_num = 2 * math.pow(2, layer + 1).toInt - (layer + 3) - (math.pow(2, layer).toInt - 1) + i // 현재 layer 내 csa_num
       val wire_idx = n / 2 + (n / math.pow(2, layer + 1).toInt) + (n / math.pow(2, layer + 2).toInt) + i * (n / math.pow(2, layer + 1).toInt) - 1          // 현재 csa의 wire_idx
       val offset = n / math.pow(2, layer + 2).toInt       // input #1과 input #2의 wire offset
-
-      println("layer: " + layer + " i : " + i + " csa_num : " + csa_num + " wire_idx: " + wire_idx + " offset: " + offset)
       
       CSA_DOWN(csa_num).a := Sum_lv2(wire_idx - offset)
       CSA_DOWN(csa_num).b := Carry_lv2(wire_idx - offset)
@@ -170,7 +174,8 @@ class SparsePrefixSum(val n: Int) extends Module {
 
   // ripple carry adder 추가
 }
-object CSA4 extends App {
+
+object prefixsum extends App {
   (new ChiselStage)
     .execute(
       Array("-X", "verilog"),

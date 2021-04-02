@@ -4,14 +4,15 @@
   * 
   */
 
-import Chisel._
+//import Chisel._
+import chisel3._
 import chisel3.util.{log2Ceil, log2Floor}
 import chisel3.stage.{ChiselStage, ChiselGeneratorAnnotation}
 import scala.math.pow
 
 class FA extends Module {
   val io = new Bundle {
-    val a = UInt(INPUT, 1)
+    val a = UInt(INPUT, 1) Input
     val b = UInt(INPUT, 1)
     val cin = UInt(INPUT, 1)
     val sum = UInt(OUTPUT, 1)
@@ -79,8 +80,8 @@ class CSA4(val n: Int) extends Module {
 
 class RCA(val n:Int) extends Module {
   val io = new Bundle {
-    val A = UInt(INPUT, n)
-    val B = UInt(INPUT, n)
+    val a = UInt(INPUT, n)
+    val b = UInt(INPUT, n)
     val Cin = UInt(INPUT, 1)
     val Sum = UInt(OUTPUT, n)
     val Cout = UInt(OUTPUT, 1)
@@ -92,8 +93,8 @@ class RCA(val n:Int) extends Module {
   Carry(0) := io.Cin
   
   for (i <- 0 until n) {
-    FAs(i).a := io.A(i)
-    FAs(i).b := io.B(i)
+    FAs(i).a := io.a(i)
+    FAs(i).b := io.b(i)
     FAs(i).cin := Carry(i)
     Sum(i) := FAs(i).sum
     Carry(i+1) := FAs(i).cout
@@ -106,15 +107,15 @@ class RCA(val n:Int) extends Module {
 class PrefixSum(val n: Int) extends Module {
   val io = new Bundle {
     val in = Bits(INPUT, n)
-    val out = Bits(OUTPUT, n * (2 * log2Floor(n) - 1)) //일단 출력할려고 *로 함. 원래는 RSA로 뽑은 + 비트 수
-    val out = 
+    //val out = Bits(OUTPUT, n * (2 * log2Floor(n) - 1)) //일단 출력할려고 *로 함. 원래는 RSA로 뽑은 + 비트 수
+    val out = Output(Wire(Vec(n, UInt((log2Floor(n) + 1).W))))
   }
   
   val Up_layers = log2Floor(n)
   val Down_layers = log2Floor(n) - 1
   val CSA_UP = Vec.fill(n - 1) { Module(new CSA4(1 + Up_layers)).io }
-  val CSA_DOWN = Vec.fill(n - log2Floor(16)) { Module(new CSA4(1 + Up_layers + Down_layers)).io }
-  val RCAs = Vec.fill(n) {Module(new RCA(n)).io}
+  val CSA_DOWN = Vec.fill(n - log2Floor(16)) { Module(new CSA4(1 + Up_layers)).io }
+  val RCA = Vec.fill(n) {Module(new RCA(n)).io}
   val Sum = Vec.fill(n) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
   val Carry = Vec.fill(n + 1) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
   val Sum_lv2 = Vec.fill(n) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
@@ -198,15 +199,48 @@ class PrefixSum(val n: Int) extends Module {
       Carry_lv2(wire_idx) := CSA_DOWN(i).cout
     }
   }
-  //0은 input이랑 바로 연결 & 1, 3, 7, 15, 31 ...은 Sum lv1과 바로 연결
 
-  // ripple carry adder 추가
+  //0은 input이랑 바로 연결 & 1, 3, 7, 15, 31 ...은 Sum lv1과 바로 연결
+  for(i <- 0 until n){
+    if(i ==0){
+      io.out(i) := io.in(i)
+    }
+    else if(isPow2(i + 1)){
+      RCA(i).a := Sum(i)
+      RCA(i).b := Carry(i)
+      RCA(i).Cin := UInt(0)
+      io.out(i):= Cat(RCA(i).Cout, RCA(i).Sum)
+    }
+    else{
+      RCA(i).a := Sum_lv2(i)
+      RCA(i).b := Carry_lv2(i)
+      RCA(i).Cin := UInt(0)
+      io.out(i):= Cat(RCA(i).Cout, RCA(i).Sum)
+    }
+  }
 }
 
+class Top_module(n: Int) extends Module {
+  val io = new Bundle{
+    val in = Bits(INPUT, n)
+    val out = Bits(OUTPUT, n * (log2Floor(n) + 1))
+  }
+  
+  val mem = SyncReadMem(128, UInt(64.W))
+  val prefix = Module(new PrefixSum(n))
+  val rdAddr = UInt(0)
+
+  prefix.in := io.in
+  
+  for(i <- 0 until n){
+    val rdData = mem.read(io.rdAddr)
+    io.out((log2Floor(n) + 1) * (i + 1), (log2Floor(n) + 1) * i) := rdData
+  }
+}
 object prefixsum extends App {
   (new ChiselStage)
     .execute(
       Array("-X", "verilog"),
-      Seq(ChiselGeneratorAnnotation(() => new PrefixSum(32)))
+      Seq(ChiselGeneratorAnnotation(() => new PrefixSum(8)))
     )
 }

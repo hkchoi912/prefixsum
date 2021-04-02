@@ -1,8 +1,8 @@
 /** TODO
   * 1. 지금 down-layer에서도 CSA 지날때마다 1bit씩 증가되도록 설계되어있음. up-layer 마지막인 MSB가 최대 bit이므로 up-layer 이후에는 bit 증가시키지 않아도 됨
+  *    1+log2(n) size가 될텐데, 실제 packig에 필요한 bit는 log2(n). MSB는 왜 필요 없지? 전부 1일때 확인해보기
   * 
   */
-
 
 import Chisel._
 import chisel3.util.{log2Ceil, log2Floor}
@@ -77,7 +77,33 @@ class CSA4(val n: Int) extends Module {
   io.cout := CSA3_L2.cout
 }
 
-class SparsePrefixSum(val n: Int) extends Module {
+class RCA(val n:Int) extends Module {
+  val io = new Bundle {
+    val A = UInt(INPUT, n)
+    val B = UInt(INPUT, n)
+    val Cin = UInt(INPUT, 1)
+    val Sum = UInt(OUTPUT, n)
+    val Cout = UInt(OUTPUT, 1)
+  }
+  //create a vector of FullAdders
+  val FAs = Vec.fill(n){ Module(new FA()).io }
+  val carry = Vec.fill(n+1){ UInt(width = 1) }
+  val sum = Vec.fill(n){ UInt(width = 1) }
+  //first carry is the top level carry in
+  carry(0) := io.Cin
+  //wire up the ports of the full adders
+  for (i <- 0 until n) {
+    FAs(i).a := io.A(i)
+    FAs(i).b := io.B(i)
+    FAs(i).cin := carry(i)
+    carry(i+1) := FAs(i).cout
+    sum(i) := FAs(i).sum
+  }
+  io.Sum := sum
+  io.Cout := carry(n)
+}
+
+class PrefixSum(val n: Int) extends Module {
   val io = new Bundle {
     val in = Bits(INPUT, n)
     val out = Bits(OUTPUT, n * (2 * log2Floor(n) - 1)) //일단 출력할려고 *로 함. 원래는 RSA로 뽑은 + 비트 수
@@ -179,6 +205,6 @@ object prefixsum extends App {
   (new ChiselStage)
     .execute(
       Array("-X", "verilog"),
-      Seq(ChiselGeneratorAnnotation(() => new SparsePrefixSum(32)))
+      Seq(ChiselGeneratorAnnotation(() => new PrefixSum(32)))
     )
 }

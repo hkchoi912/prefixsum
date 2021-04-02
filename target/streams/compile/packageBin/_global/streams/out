@@ -10,6 +10,8 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/RCA.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	PrefixSum.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/PrefixSum.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Top_module.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/Top_module.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	prefixsum$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/prefixsum$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	prefixsum.class[0m
@@ -24,6 +26,8 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/RCA$$anon$4.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	PrefixSum$$anon$5.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/PrefixSum$$anon$5.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Top_module$$anon$6.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/Top_module$$anon$6.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	prefixsum$delayedInit$body.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/hkchoi/test/prefixsum/target/scala-2.12/classes/prefixsum$delayedInit$body.class[0m
 [0m[[0m[0mdebug[0m] [0m[0mDone packaging.[0m

@@ -6,17 +6,18 @@
 
 //import Chisel._
 import chisel3._
+import chisel3.util._
 import chisel3.util.{log2Ceil, log2Floor}
 import chisel3.stage.{ChiselStage, ChiselGeneratorAnnotation}
 import scala.math.pow
 
 class FA extends Module {
   val io = new Bundle {
-    val a = UInt(INPUT, 1) Input
-    val b = UInt(INPUT, 1)
-    val cin = UInt(INPUT, 1)
-    val sum = UInt(OUTPUT, 1)
-    val cout = UInt(OUTPUT, 1)
+    val a = Input(UInt(1.W)) 
+    val b = Input(UInt(1.W))
+    val cin = Input(UInt(1.W))
+    val sum = Output(UInt(1.W))
+    val cout = Output(UInt(1.W))
   }
   val a_xor_b = io.a ^ io.b
   io.sum := a_xor_b ^ io.cin
@@ -29,18 +30,18 @@ class FA extends Module {
 
 class CSA3(val n: Int) extends Module {
   val io = new Bundle {
-    val a = UInt(INPUT, n)
-    val b = UInt(INPUT, n)
-    val c = UInt(INPUT, n)
-    val sum = UInt(OUTPUT, n)
-    val cout = UInt(OUTPUT, n + 1)
+    val a = Input(UInt(n.W))  
+    val b = Input(UInt(n.W))
+    val c = Input(UInt(n.W))
+    val sum = Output(UInt(n.W))
+    val cout = Output(UInt(n.W))
   }
 
-  val FAs = Vec.fill(n) { Module(new FA()).io }
-  val Sum = Vec.fill(n) { Wire(UInt(1.W)) }
-  val Carry = Vec.fill(n + 1) { Wire(UInt(1.W)) }
+  val FAs = Vec(n, Module(new FA()).io)
+  val Sum = Vec(n, Wire(UInt(1.W)))
+  val Carry = Vec(n + 1, Wire(UInt(1.W)))
 
-  Carry(0) := UInt(0)
+  Carry(0) := 1.U(1.W)
 
   for (i <- 0 until n) {
     FAs(i).a := io.a(i)
@@ -50,18 +51,18 @@ class CSA3(val n: Int) extends Module {
     Carry(i + 1) := FAs(i).cout
   }
 
-  io.sum := Reverse(Cat(Sum))
-  io.cout := Reverse(Cat(Carry))
+  io.sum := Sum    //TODO. reverse 지움. chisel3에서 지원하는거 확인하기
+  io.cout := Carry
 }
 
 class CSA4(val n: Int) extends Module {
   val io = new Bundle {
-    val a = UInt(INPUT, n)
-    val b = UInt(INPUT, n)
-    val c = UInt(INPUT, n)
-    val d = UInt(INPUT, n)
-    val sum = UInt(OUTPUT, n + 1)
-    val cout = UInt(OUTPUT, n + 2)
+    val a = Input(UInt(n.W))  
+    val b = Input(UInt(n.W))
+    val c = Input(UInt(n.W))
+    val d = Input(UInt(n.W))
+    val sum = Output(UInt((n + 1).W)) 
+    val cout = Output(UInt((n + 2).W))
   }
 
   val CSA3_L1 = Module(new CSA3(n)).io
@@ -80,15 +81,15 @@ class CSA4(val n: Int) extends Module {
 
 class RCA(val n:Int) extends Module {
   val io = new Bundle {
-    val a = UInt(INPUT, n)
-    val b = UInt(INPUT, n)
-    val Cin = UInt(INPUT, 1)
-    val Sum = UInt(OUTPUT, n)
-    val Cout = UInt(OUTPUT, 1)
+    val a = Input(UInt(n.W))
+    val b = Input(UInt(n.W))
+    val Cin = Input(UInt(n.W))
+    val Sum = Output(UInt(n.W))
+    val Cout = Output(UInt(1.W))
   }
-  val FAs = Vec.fill(n) { Module(new FA()).io }
-  val Sum = Vec.fill(n) { Wire(UInt(1.W)) }
-  val Carry = Vec.fill(n+1) { Wire(UInt(1.W)) }
+  val FAs = Vec(n, Module(new FA()).io)
+  val Sum = Vec(n, Wire(UInt(1.W)))
+  val Carry = Vec(n + 1, Wire(UInt(1.W)))
   
   Carry(0) := io.Cin
   
@@ -100,33 +101,33 @@ class RCA(val n:Int) extends Module {
     Carry(i+1) := FAs(i).cout
   }
 
-  io.Sum := Reverse(Cat(Sum))
+  io.Sum := Sum   //TODO. rever & cat 지웠는데 잘 동작하는지 확인 필요
   io.Cout := Carry(n)
 }
 
 class PrefixSum(val n: Int) extends Module {
   val io = new Bundle {
-    val in = Bits(INPUT, n)
+    val in = Input(UInt(n.W))
     //val out = Bits(OUTPUT, n * (2 * log2Floor(n) - 1)) //일단 출력할려고 *로 함. 원래는 RSA로 뽑은 + 비트 수
     val out = Output(Wire(Vec(n, UInt((log2Floor(n) + 1).W))))
   }
   
   val Up_layers = log2Floor(n)
   val Down_layers = log2Floor(n) - 1
-  val CSA_UP = Vec.fill(n - 1) { Module(new CSA4(1 + Up_layers)).io }
-  val CSA_DOWN = Vec.fill(n - log2Floor(16)) { Module(new CSA4(1 + Up_layers)).io }
-  val RCA = Vec.fill(n) {Module(new RCA(n)).io}
-  val Sum = Vec.fill(n) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
-  val Carry = Vec.fill(n + 1) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
-  val Sum_lv2 = Vec.fill(n) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
-  val Carry_lv2 = Vec.fill(n + 1) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
+  val CSA_UP = Vec(n - 1, Module(new CSA4(1 + Up_layers)).io)
+  val CSA_DOWN = Vec(n - log2Floor(16), Module(new CSA4(1 + Up_layers)).io)
+  val RCA = Vec(n, Module(new RCA(n)).io)
+  val Sum = Vec(n, Wire(UInt((1 + Up_layers + Down_layers).W)))
+  val Carry = Vec(n + 1, Wire(UInt((1 + Up_layers + Down_layers).W)))
+  val Sum_lv2 = Vec(n, Wire(UInt((1 + Up_layers + Down_layers).W)))
+  val Carry_lv2 = Vec(n + 1, Wire(UInt((1 + Up_layers + Down_layers).W)))
 
   // lv0
   for (i <- 0 until n / 2) {
     CSA_UP(i).a := io.in(i)
     CSA_UP(i).b := io.in(i + 1)
-    CSA_UP(i).b := UInt(0)
-    CSA_UP(i).b := UInt(0)
+    CSA_UP(i).b := 0.U(1.W)
+    CSA_UP(i).b := 0.U(1.W)
     if (i % 2 == 0) {
       Sum(2 * i + 1) := CSA_UP(i).sum
       Carry(2 * i + 1) := CSA_UP(i).cout
@@ -188,7 +189,7 @@ class PrefixSum(val n: Int) extends Module {
       if (wire_idx % 2 == 0){ 
         //wire_idx가 짝수이면 io.in에서 입력을 받음
         CSA_DOWN(csa_num).c := io.in(wire_idx)
-        CSA_DOWN(csa_num).d := UInt(0)
+        CSA_DOWN(csa_num).d := 0.U(1.W)
       } else{
         // 홀수이면 Sum & Carry에서 받음
         CSA_DOWN(csa_num).c := Sum(wire_idx)
@@ -208,35 +209,36 @@ class PrefixSum(val n: Int) extends Module {
     else if(isPow2(i + 1)){
       RCA(i).a := Sum(i)
       RCA(i).b := Carry(i)
-      RCA(i).Cin := UInt(0)
-      io.out(i):= Cat(RCA(i).Cout, RCA(i).Sum)
+      RCA(i).Cin := 0.U(1.W)
+      io.out(i) := Cat(RCA(i).Cout, RCA(i).Sum) //TODO. Cat 지웠음
     }
     else{
       RCA(i).a := Sum_lv2(i)
       RCA(i).b := Carry_lv2(i)
-      RCA(i).Cin := UInt(0)
-      io.out(i):= Cat(RCA(i).Cout, RCA(i).Sum)
+      RCA(i).Cin := 0.U(1.W)
+      io.out(i) := Cat(RCA(i).Cout, RCA(i).Sum) //TODO. Cat지웠음 확인 필요
     }
   }
 }
 
 class Top_module(n: Int) extends Module {
   val io = new Bundle{
-    val in = Bits(INPUT, n)
-    val out = Bits(OUTPUT, n * (log2Floor(n) + 1))
+    val in = Input(UInt(n.W))
+    val out = Output(UInt((n * (log2Floor(n) + 1)).W))
   }
   
   val mem = SyncReadMem(128, UInt(64.W))
   val prefix = Module(new PrefixSum(n))
-  val rdAddr = UInt(0)
+  val rdAddr = 0.U(1.W)
 
-  prefix.in := io.in
+  prefix.io.in := io.in
   
   for(i <- 0 until n){
-    val rdData = mem.read(io.rdAddr)
+    val rdData = mem.read(rdAddr)
     io.out((log2Floor(n) + 1) * (i + 1), (log2Floor(n) + 1) * i) := rdData
   }
 }
+
 object prefixsum extends App {
   (new ChiselStage)
     .execute(

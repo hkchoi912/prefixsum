@@ -85,34 +85,36 @@ class RCA(val n:Int) extends Module {
     val Sum = UInt(OUTPUT, n)
     val Cout = UInt(OUTPUT, 1)
   }
-  //create a vector of FullAdders
-  val FAs = Vec.fill(n){ Module(new FA()).io }
-  val carry = Vec.fill(n+1){ UInt(width = 1) }
-  val sum = Vec.fill(n){ UInt(width = 1) }
-  //first carry is the top level carry in
-  carry(0) := io.Cin
-  //wire up the ports of the full adders
+  val FAs = Vec.fill(n) { Module(new FA()).io }
+  val Sum = Vec.fill(n) { Wire(UInt(1.W)) }
+  val Carry = Vec.fill(n+1) { Wire(UInt(1.W)) }
+  
+  Carry(0) := io.Cin
+  
   for (i <- 0 until n) {
     FAs(i).a := io.A(i)
     FAs(i).b := io.B(i)
-    FAs(i).cin := carry(i)
-    carry(i+1) := FAs(i).cout
-    sum(i) := FAs(i).sum
+    FAs(i).cin := Carry(i)
+    Sum(i) := FAs(i).sum
+    Carry(i+1) := FAs(i).cout
   }
-  io.Sum := sum
-  io.Cout := carry(n)
+
+  io.Sum := Reverse(Cat(Sum))
+  io.Cout := Carry(n)
 }
 
 class PrefixSum(val n: Int) extends Module {
   val io = new Bundle {
     val in = Bits(INPUT, n)
     val out = Bits(OUTPUT, n * (2 * log2Floor(n) - 1)) //일단 출력할려고 *로 함. 원래는 RSA로 뽑은 + 비트 수
+    val out = 
   }
   
   val Up_layers = log2Floor(n)
   val Down_layers = log2Floor(n) - 1
   val CSA_UP = Vec.fill(n - 1) { Module(new CSA4(1 + Up_layers)).io }
   val CSA_DOWN = Vec.fill(n - log2Floor(16)) { Module(new CSA4(1 + Up_layers + Down_layers)).io }
+  val RCAs = Vec.fill(n) {Module(new RCA(n)).io}
   val Sum = Vec.fill(n) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
   val Carry = Vec.fill(n + 1) { Wire(UInt((1 + Up_layers + Down_layers).W)) }
   val Sum_lv2 = Vec.fill(n) { Wire(UInt((1 + Up_layers + Down_layers).W)) }

@@ -50,7 +50,7 @@ class CSA3(val n: Int) extends Module {
     Carry(i + 1) := FAs(i).cout
   }
 
-  io.sum := Sum.asUInt    //TODO. reverse 지움. chisel3에서 지원하는거 확인하기
+  io.sum := Sum.asUInt
   io.cout := Carry.asUInt
 }
 
@@ -61,7 +61,7 @@ class CSA4(val n: Int) extends Module {
     val c = Input(UInt(n.W))
     val d = Input(UInt(n.W))
     val sum = Output(UInt((n + 1).W)) 
-    val cout = Output(UInt((n + 2).W))
+    val cout = Output(UInt((n + 1).W))
   })
  
   val CSA3_L1 = Module(new CSA3(n)).io
@@ -75,7 +75,7 @@ class CSA4(val n: Int) extends Module {
   CSA3_L2.c := CSA3_L1.cout
 
   io.sum := CSA3_L2.sum
-  io.cout := CSA3_L2.cout
+  io.cout := CSA3_L2.cout(n,0)
 }
 
 // class RCA(val n:Int) extends Module {
@@ -224,6 +224,6 @@ object prefixsum extends App {
   (new ChiselStage)
     .execute(
       Array("-X", "verilog"),
-      Seq(ChiselGeneratorAnnotation(() => new CSA4(4)))
+      Seq(ChiselGeneratorAnnotation(() => new FA()))
     )
 }

@@ -55,15 +55,15 @@ class CSA3(val n: Int) extends Module {
 }
 
 class CSA4(val n: Int) extends Module {
-  val io = new Bundle {
+  val io = IO(new Bundle {
     val a = Input(UInt(n.W))  
     val b = Input(UInt(n.W))
     val c = Input(UInt(n.W))
     val d = Input(UInt(n.W))
     val sum = Output(UInt((n + 1).W)) 
     val cout = Output(UInt((n + 2).W))
-  }
-
+  })
+ 
   val CSA3_L1 = Module(new CSA3(n)).io
   CSA3_L1.a := io.a
   CSA3_L1.b := io.b
@@ -224,6 +224,6 @@ object prefixsum extends App {
   (new ChiselStage)
     .execute(
       Array("-X", "verilog"),
-      Seq(ChiselGeneratorAnnotation(() => new CSA3(4)))
+      Seq(ChiselGeneratorAnnotation(() => new CSA4(4)))
     )
 }

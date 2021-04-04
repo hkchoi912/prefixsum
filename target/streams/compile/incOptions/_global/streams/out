@@ -1,46 +1,32 @@
 [0m[[0m[0mdebug[0m] [0m[0mCreated transactional ClassFileManager with tempDir = /home/hkchoi/test/prefixsum/target/scala-2.12/classes.bak[0m
 [0m[[0m[0mdebug[0m] [0m[0mAbout to delete class files:[0m
-[0m[[0m[0mdebug[0m] [0m[0m	CSA4$$anon$3.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	CSA3$$anon$3.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	FA.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	PrefixSum.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	PrefixSum$$anon$5.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	prefixsum$delayedInit$body.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	RCA$$anon$4.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	CSA4.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	prefixsum.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	FA$$anon$1.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	CSA3$$anon$2.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	RCA.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Adder$$anon$2.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	CSA3.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	prefixsum$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Adder.class[0m
 [0m[[0m[0mdebug[0m] [0m[0mWe backup class files:[0m
-[0m[[0m[0mdebug[0m] [0m[0m	CSA4$$anon$3.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	CSA3$$anon$3.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	FA.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	PrefixSum.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	PrefixSum$$anon$5.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	prefixsum$delayedInit$body.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	RCA$$anon$4.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	CSA4.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	prefixsum.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	FA$$anon$1.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	CSA3$$anon$2.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	RCA.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Adder$$anon$2.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	CSA3.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	prefixsum$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Adder.class[0m
 [0m[[0m[0mdebug[0m] [0m[0mRegistering generated classes:[0m
-[0m[[0m[0mdebug[0m] [0m[0m	CSA4$$anon$3.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	CSA3$$anon$3.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	FA.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	PrefixSum.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	PrefixSum$$anon$5.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	prefixsum$delayedInit$body.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	Top_module$$anon$6.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	RCA$$anon$4.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	CSA4.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	prefixsum.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	FA$$anon$1.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	Top_module.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	CSA3$$anon$2.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	RCA.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Adder$$anon$2.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	CSA3.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	prefixsum$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Adder.class[0m
 [0m[[0m[0mdebug[0m] [0m[0mRemoving the temporary directory used for backing up class files: /home/hkchoi/test/prefixsum/target/scala-2.12/classes.bak[0m

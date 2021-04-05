@@ -69,13 +69,13 @@ class CSA4(val n: Int) extends Module {
   CSA3_L1.b := io.b
   CSA3_L1.c := io.c
 
-  val CSA3_L2 = Module(new CSA3(n + 1)).io
+  val CSA3_L2 = Module(new CSA3(n)).io
   CSA3_L2.a := io.d
-  CSA3_L2.b := CSA3_L1.sum
-  CSA3_L2.c := CSA3_L1.cout
+  CSA3_L2.b := CSA3_L1.sum  // sum 4비트
+  CSA3_L2.c := Cat(CSA3_L1.cout(n - 1, 0), 0.U(1.W))  //cout 5비트, 맨앞에꺼 자르고 맨뒤에 0
 
-  io.sum := CSA3_L2.sum
-  io.cout := CSA3_L2.cout(n,0)
+  io.sum := Cat(CSA3_L1.cout(n), CSA3_L2.sum)  // 최종 5비트. 
+  io.cout := Cat(CSA3_L2.cout(n-1,0), 0.U(1.W))
 }
 
 // class RCA(val n:Int) extends Module {

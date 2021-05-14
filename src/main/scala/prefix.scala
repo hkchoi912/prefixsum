@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2021 CAMELab
+ *
+ * This file is part of <CAMELab gnn-store-x project>
+ *
+ * This is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
 import chisel3._
 import chisel3.util._
 import chisel3.util.{log2Ceil, log2Floor}
@@ -99,10 +115,13 @@ class RCA(val n:Int) extends Module {
   io.cout := Carry(n)
 }
 
-/** PrefixSum
-  * 
-  * @param n: number of array entries
-  * @param w: width of data
+/*
+  * PrefixSum unit
+  *
+  * @param inputType = UInt(8.W)
+  * @param outputType = UInt(8.W)
+  * @param w = 8
+  * @param n = 8, 16, 32, 64, 128
   */
 class PrefixSum[T <: Data](inputType: T, outputType: T, val w: Int, val n: Int) extends Module {
   val io = IO(new Bundle {
@@ -173,7 +192,6 @@ class PrefixSum[T <: Data](inputType: T, outputType: T, val w: Int, val n: Int) 
     val in_wire_idx1 = n / math.pow(2, layer + 1).toInt - 1      // base CSA의 input #1에 연결할 wire idx
     val in_wire_idx2 = n / math.pow(2, layer + 1).toInt - 1 + n / math.pow(2, layer + 2).toInt //base CSA의 input #2에 연결할 wire idx
     
-
     // input에 연결할 wire idx = in_wire_idx + offset
     for (i <- 0 until 2 * math.pow(2, layer).toInt - 1 - (math.pow(2, layer).toInt - 1)) {
       val csa_num = base_num + i
@@ -223,6 +241,6 @@ object prefixsum extends App {
   (new ChiselStage)
     .execute(
       Array("-X", "verilog"),
-      Seq(ChiselGeneratorAnnotation(() => new PrefixSum(UInt(32.W), UInt(32.W), 32, 8)))
+      Seq(ChiselGeneratorAnnotation(() => new PrefixSum(UInt(8.W), UInt(8.W), 8, 64)))
     )
 }

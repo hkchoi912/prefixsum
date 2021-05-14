@@ -1,4 +1,5 @@
 # Subdirectories
+/.metals
 .metals/
 target/
 
@@ -12,6 +13,9 @@ target/
 *.log
 *.zip
 *.bak
+*.log
+.metals/metals.h2.db
+
 
 out
 inputs

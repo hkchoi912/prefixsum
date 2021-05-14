@@ -223,6 +223,6 @@ object prefixsum extends App {
   (new ChiselStage)
     .execute(
       Array("-X", "verilog"),
-      Seq(ChiselGeneratorAnnotation(() => new PrefixSum(UInt(32.W), UInt(32.W), 32, 64)))
+      Seq(ChiselGeneratorAnnotation(() => new PrefixSum(UInt(32.W), UInt(32.W), 32, 8)))
     )
 }

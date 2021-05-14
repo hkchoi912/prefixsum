@@ -1,6 +1,6 @@
 # Subdirectories
-*.metals/
-./target/
+.metals/
+target/
 
 # Files
 *.json
@@ -11,6 +11,7 @@
 *.jar
 *.log
 *.zip
+*.bak
 
 out
 inputs

@@ -4,5 +4,5 @@ SBT = sbt
 prefix:
 	$(SBT) "runMain prefix"
 
-packing:
-	$(SBT) "runMain "packing"
+# packing:
+# 	$(SBT) "runMain "packing"

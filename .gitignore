@@ -1,8 +1,7 @@
 # Subdirectories
-.metals
 .metals/
 target/
-./project
+project/
 
 # Files
 *.json
@@ -17,7 +16,6 @@ target/
 *.log
 .metals/metals.h2.db
 
-
-out
-inputs
-
+target/streams/compile/compileIncremental/_global/streams/out
+.gitignore
+target/streams/compile/packageBin/_global/streams/out

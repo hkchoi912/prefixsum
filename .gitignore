@@ -1,7 +1,8 @@
 # Subdirectories
-/.metals
+.metals
 .metals/
 target/
+./project
 
 # Files
 *.json

@@ -1,4 +1,4 @@
-[0m[[0m[0mdebug[0m] [0m[0mCreated transactional ClassFileManager with tempDir = /home/hkchoi/test/prefixsum/target/scala-2.12/classes.bak[0m
+[0m[[0m[0mdebug[0m] [0m[0mCreated transactional ClassFileManager with tempDir = /home/hkchoi/gnn-store-x/prefixsum/target/scala-2.12/classes.bak[0m
 [0m[[0m[0mdebug[0m] [0m[0mAbout to delete class files:[0m
 [0m[[0m[0mdebug[0m] [0m[0m	CSA4$$anon$3.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	FA.class[0m
@@ -41,4 +41,4 @@
 [0m[[0m[0mdebug[0m] [0m[0m	RCA.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	CSA3.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	prefixsum$.class[0m
-[0m[[0m[0mdebug[0m] [0m[0mRemoving the temporary directory used for backing up class files: /home/hkchoi/test/prefixsum/target/scala-2.12/classes.bak[0m
+[0m[[0m[0mdebug[0m] [0m[0mRemoving the temporary directory used for backing up class files: /home/hkchoi/gnn-store-x/prefixsum/target/scala-2.12/classes.bak[0m
